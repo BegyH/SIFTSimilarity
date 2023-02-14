@@ -53,11 +53,23 @@ def compare_pieces(orig, checked, s) -> dict:
     """
 
     orig_keyp, orig_desc = SIFTSimilarity.compute_sift(orig, s)
+    deserializedOrigKeypoints = []
+    for point in orig_keyp:
+        temp = (point.pt, point.size, point.angle, point.response, point.octave, point.class_id)
+        deserializedOrigKeypoints.append(temp)
+
     check_keyp, check_desc = SIFTSimilarity.compute_sift(checked, s)
+    deserializedCheckKeypoints = []
+    for point in check_keyp:
+        temp = (point.pt, point.size, point.angle, point.response, point.octave, point.class_id)
+        deserializedCheckKeypoints.append(temp)
+
     matches = SIFTSimilarity.calculate_matches(orig_desc, check_desc)
-    score = SIFTSimilarity.calculate_score(matches, orig_keyp, check_keyp)
+    score = SIFTSimilarity.calculate_score(len(matches),
+                                           len(deserializedOrigKeypoints),
+                                           len(deserializedCheckKeypoints))
     ans = {'score': score,
-           'keypoints': [orig_keyp, check_keyp],
+           'keypoints': [deserializedOrigKeypoints, deserializedCheckKeypoints],
            'matches': matches}
     return ans
 
